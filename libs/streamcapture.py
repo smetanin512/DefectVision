@@ -1,4 +1,4 @@
-from PyQt5.QtCore import (QThread, pyqtSignal, QMutex, pyqtSlot)
+from PyQt5.QtCore import (QThread, pyqtSignal, QMutex, pyqtSlot, QElapsedTimer)
 import cv2
 import numpy as np
 from sys import platform
@@ -13,17 +13,26 @@ class StreamCapture(QThread):
         self.frame = None
         self.cap = None
         self.exit_flag = False
+        self.timer = QElapsedTimer()
 
     def run(self):
         if platform == "linux" or platform == "linux2":
-            self.cap = cv2.VideoCapture(self.camip, cv2.CAP_GSTREAMER)
+            self.cap = cv2.VideoCapture(self.camip)
         else:
             self.cap = cv2.VideoCapture(self.camip)
-        while (not (self.exit_flag)):
+        self.sleeptime = 1000 // self.cap.get(cv2.CAP_PROP_FPS)
+        self.timer.start()
+        while not self.exit_flag:
+            self.timer.restart()
             ret, self.frame = self.cap.read()
+            if self.cap.get(cv2.CAP_PROP_POS_FRAMES) == self.cap.get(cv2.CAP_PROP_FRAME_COUNT):
+                self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
             if not ret:
                 self.frame = self.show_empty_frame()
                 self.msleep(40)
+            else:
+                if self.timer.elapsed() < self.sleeptime:
+                    self.msleep(int(self.sleeptime - self.timer.elapsed()))
             self.getframe.emit(self.frame.copy())
         self.cap.release()
 

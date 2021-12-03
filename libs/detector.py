@@ -1,8 +1,7 @@
+# from ctypes import *
+import darknet
 from PyQt5.QtCore import (QThread, pyqtSignal, QMutex, pyqtSlot)
 import cv2
-import darknet
-import random
-import os
 import numpy as np
 
 
@@ -11,7 +10,7 @@ class DefectDetector(QThread):
 
     def __init__(self, config_path, data_path, weights):
         super().__init__()
-        self.network, self.class_name, self.class_colors = darknet.load_network(
+        self.network, self.class_names, self.class_colors = darknet.load_network(
             config_path, data_path, weights, batch_size=1
         )
         self.darknet_width = darknet.network_width(self.network)
