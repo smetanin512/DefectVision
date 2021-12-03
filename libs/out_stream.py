@@ -24,7 +24,7 @@ class OutStream(QThread):
             if self.exit_flag:
                 break
             if self.output_frame is not None:
-                self.output_frame = cv2.resize(cv2.rotate(self.output_frame, cv2.ROTATE_90_CLOCKWISE), (640, 480))
+                self.output_frame = cv2.rotate(self.output_frame, cv2.ROTATE_90_CLOCKWISE)
                 if self.out_stream is None:
                     h, w, _ = self.output_frame.shape
                     self.out_stream = cv2.VideoWriter(
