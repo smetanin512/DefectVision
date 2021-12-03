@@ -19,7 +19,7 @@ class DefectDetector(QThread):
         self.busy = False
         self.exit_flag = False
         self.mutex = QMutex()
-        self.thresh = 0.9
+        self.thresh = 0.95
 
     def run(self):
         self.mutex.lock()

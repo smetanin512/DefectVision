@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from PyQt5.QtCore import (QThread, pyqtSignal, QMutex, pyqtSlot, QTimer)
+import imutils
 
 
 class OutStream(QThread):
@@ -23,19 +24,22 @@ class OutStream(QThread):
             if self.exit_flag:
                 break
             if self.output_frame is not None:
+                self.output_frame = cv2.resize(cv2.rotate(self.output_frame, cv2.ROTATE_90_CLOCKWISE), (640, 480))
                 if self.out_stream is None:
                     h, w, _ = self.output_frame.shape
                     self.out_stream = cv2.VideoWriter(
                         # "appsrc ! videoconvert ! jpegenc ! tcpserversink host=94.26.229.85 port=5001",
-                        
-                        "appsrc ! videoconvert ! x264enc  pass=17 tune=zerolatency byte-stream=true ! h264parse ! mpegtsmux ! tcpserversink host=94.26.229.85 port=5001",
+                        'appsrc ! videoconvert'
+                        ' ! x264enc speed-preset=fast tune=zerolatency bitrate=128'
+                        ' ! rtspclientsink location=rtsp://localhost:8554/mystream',
+                        # "appsrc ! videoconvert ! x264enc  pass=17 tune=zerolatency byte-stream=true ! h264parse ! mpegtsmux ! tcpserversink host=94.26.229.85 port=5001",
                         cv2.CAP_GSTREAMER,
-                        0, 19, (w, h), True)
+                        0, 15, (w, h), True)
                 self.out_stream.write(self.output_frame)
                 self.fps_counter += 1
 
     def reset_fps(self):
-        print('fps =', self.fps_counter)
+        # print('fps =', self.fps_counter)
         self.fps_counter = 0
 
     @pyqtSlot(np.ndarray)
