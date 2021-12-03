@@ -30,11 +30,11 @@ class OutStream(QThread):
                     self.out_stream = cv2.VideoWriter(
                         # "appsrc ! videoconvert ! jpegenc ! tcpserversink host=94.26.229.85 port=5001",
                         'appsrc ! videoconvert'
-                        ' ! x264enc speed-preset=fast tune=zerolatency bitrate=128'
+                        ' ! x264enc speed-preset=fast tune=zerolatency bitrate=2048'
                         ' ! rtspclientsink location=rtsp://localhost:8554/mystream',
                         # "appsrc ! videoconvert ! x264enc  pass=17 tune=zerolatency byte-stream=true ! h264parse ! mpegtsmux ! tcpserversink host=94.26.229.85 port=5001",
-                        cv2.CAP_GSTREAMER,
-                        0, 15, (w, h), True)
+                        0,
+                        cv2.VideoWriter_fourcc(*'avc1'), 25, (w, h), True)
                 self.out_stream.write(self.output_frame)
                 self.fps_counter += 1
 
