@@ -1,4 +1,4 @@
-# DefectVision
+# MetalVision
 Для запуска требуется сбилдить darknet:
 git clone https://github.com/AlexeyAB/darknet
 cd darknet
