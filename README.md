@@ -9,7 +9,7 @@ cmake --build . --target install --parallel 8
 
 Скопировать все файлы проекта в директорию darknet
 
-Скачать веса по ссылке:
+Скачать веса по ссылке: https://drive.google.com/file/d/17nADg8Rp_2ofjZ5iDvXShhrYPnbdoHNm/view?usp=sharing
 
 Переместить по пути darknet/data
 
